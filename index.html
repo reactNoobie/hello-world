@@ -2,6 +2,18 @@
 <html>
   <head></head>
   <body>
-    <h1>Soumik!</h1>
+    <h1 id="soumik">Soumik!</h1>
+    <h1 id="count"></h1>
+    <script>
+      let count = 0;
+      window.onload = () => {
+        const soumikElement = document.querySelector('#soumik');
+        const countElement = document.querySelector('#count');
+        setInterval(() => {
+          soumikElement.innerText = `${soumikElement.innerText}!`;
+          countElement.innerText = ++count;
+        }, 3000);
+      };
+    </script>
   </body>
 </html>

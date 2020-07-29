@@ -1,2 +1,2 @@
 # hello-world
-Sample repository following GitHub guides
+Sample repository created by following GitHub guides.

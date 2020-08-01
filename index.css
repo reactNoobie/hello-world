@@ -1,0 +1,15 @@
+body {
+    background-color: darkslateblue;
+    color: floralwhite;
+}
+table {
+    width: 100%;
+    border: 1px solid royalblue;
+}
+tr, td, th {
+    text-align: center;
+    background-color: orange;
+    color: black;
+    font-weight: bold;
+    padding: 5px;
+}

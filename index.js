@@ -1,4 +1,4 @@
-const teams = ['Rakib bhaiya', 'Soumik', 'Tahmid'];
+const teams = ['Rakib bhaiya', 'Soumik', 'Tahmid', 'Leon'];
 
 const results = [];
 // results['Rakib bhaiya vs Soumik'] = [4, 3];
@@ -63,32 +63,14 @@ const getGoalInput = (placeholder, onchange) => {
     return goalInput;
 }
 
-const getResultTd = (home, away, standingsTable) => {
-    const fixtureKey = `${home} vs ${away}`;
-    const fixturePlayed = results[fixtureKey] ? results[fixtureKey].length === 2 : false;
-    const resultTd = document.createElement('td');
-    const homeGoals = getGoalInput(home[0], e => {
-        const goals = e.target.value;
-        if (!results[fixtureKey]) results[fixtureKey] = [goals, null];
-        else results[fixtureKey][0] = goals;
-        populateStandingsTable(standingsTable);
+const updatePlayedFixtures = fixturesTable => {
+    const trs = fixturesTable.querySelectorAll('tr');
+    trs.forEach(tr => {
+        const inputs = Array.from(tr.querySelectorAll('input'));
+        if (inputs.every(input => input.value)) {
+            tr.classList.add('fixturePlayed');
+        }
     });
-    const awayGoals = getGoalInput(away[0], e => {
-        const goals = e.target.value;
-        if (!results[fixtureKey]) results[fixtureKey] = [null, goals];
-        else results[fixtureKey][1] = goals;
-        populateStandingsTable(standingsTable);
-    });
-    const separator = document.createTextNode(' - ');
-    if (fixturePlayed) {
-        resultTd.classList.toggle('fixturePlayed');
-        homeGoals.value = results[fixtureKey][0];
-        awayGoals.value = results[fixtureKey][1];
-    }
-    resultTd.appendChild(homeGoals);
-    resultTd.appendChild(separator)
-    resultTd.appendChild(awayGoals);
-    return resultTd;
 }
 
 const populateStandingsTable = standingsTable => {
@@ -108,6 +90,30 @@ const populateStandingsTable = standingsTable => {
     });
 }
 
+const getResultTd = (home, away, fixturesTable, standingsTable) => {
+    const fixtureKey = `${home} vs ${away}`;
+    const resultTd = document.createElement('td');
+    const homeGoals = getGoalInput(home[0], e => {
+        const goals = e.target.value;
+        if (!results[fixtureKey]) results[fixtureKey] = [goals, null];
+        else results[fixtureKey][0] = goals;
+        updatePlayedFixtures(fixturesTable);
+        populateStandingsTable(standingsTable);
+    });
+    const awayGoals = getGoalInput(away[0], e => {
+        const goals = e.target.value;
+        if (!results[fixtureKey]) results[fixtureKey] = [null, goals];
+        else results[fixtureKey][1] = goals;
+        updatePlayedFixtures(fixturesTable);
+        populateStandingsTable(standingsTable);
+    });
+    const separator = document.createTextNode(' - ');
+    resultTd.appendChild(homeGoals);
+    resultTd.appendChild(separator)
+    resultTd.appendChild(awayGoals);
+    return resultTd;
+}
+
 window.onload = () => {
     const fixturesTable = document.querySelector('#fixtures');
     const standingsTable = document.querySelector('#standings');
@@ -121,10 +127,7 @@ window.onload = () => {
                 fixturesTr.appendChild(createTdFromData(++gameNo));
                 fixturesTr.appendChild(createTdFromData(home));
                 fixturesTr.appendChild(createTdFromData(away));
-                const resultTd = getResultTd(home, away, standingsTable);
-                if (resultTd.classList.contains('fixturePlayed')) {
-                    fixturesTr.classList.add('fixturePlayed');
-                }
+                const resultTd = getResultTd(home, away, fixturesTable, standingsTable);
                 fixturesTr.appendChild(resultTd);
                 fixturesTable.appendChild(fixturesTr);
             }

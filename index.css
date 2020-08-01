@@ -6,10 +6,17 @@ table {
     width: 100%;
     border: 1px solid royalblue;
 }
-tr, td, th {
+tr, th {
     text-align: center;
     background-color: orange;
     color: black;
     font-weight: bold;
     padding: 5px;
+}
+input {
+    max-width: 40px;
+    text-align: center;
+}
+.fixturePlayed {
+    background-color: rgb(153, 224, 224);
 }

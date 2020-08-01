@@ -1,52 +1,66 @@
 const teams = ["Rakib bhaiya", "Soumik", "Tahmid", "Leon"];
 
+const results = [];
+results['Rakib bhaiya vs Soumik'] = '4 - 3';
+results['Tahmid vs Leon'] = '4 - 4';
+results['Tahmid vs Soumik'] = '2 - 0';
+results['Soumik vs Leon'] = '1 - 4';
+results['Soumik vs Tahmid'] = '2 - 1';
+
+const getNewStandingsRow = name => ({
+    name, played: 0, won: 0, lost: 0, drawn: 0, points: 0, gf: 0, ga: 0, gd: 0
+});
+
+const getStandingsFromResults =  results => {
+    const standings = [];
+    for (fixture in results) {
+        const teams = fixture.split(' vs ');
+        const goals = results[fixture].split(' - ').map(goal => Number(goal));
+        for (let i = 0; i < teams.length; i++) {
+            const team = teams[i];
+            let entryForTeam = standings.find(entry => entry.name === team);
+            if (!entryForTeam) {
+                entryForTeam = getNewStandingsRow(team);
+                standings.push(entryForTeam);
+            }
+            const goalsFor = goals[i];
+            const goalsAgainst = goals[(i + 1) % 2];
+            entryForTeam.played++;
+            entryForTeam.gf += goalsFor;
+            entryForTeam.ga += goalsAgainst;
+            entryForTeam.gd += (goalsFor - goalsAgainst);
+            if (goalsFor > goalsAgainst) {
+                entryForTeam.won++;
+                entryForTeam.points += 3;
+            } else if (goalsFor === goalsAgainst) {
+                entryForTeam.drawn++;
+                entryForTeam.points++;
+            } else {
+                entryForTeam.lost++;
+            }
+        }
+    }
+    return standings.sort((team1, team2) => {
+        if (team1.points === team2.points) {
+            return team2.gd - team1.gd;
+        }
+        return team2.points - team1.points;
+    });
+};
+
 const createTdFromData = data => {
     const td = document.createElement('td');
     td.innerText = data;
     return td;
 }
 
-const results = [];
-results['Rakib bhaiya vs Soumik'] = '4 - 3';
-results['Tahmid vs Leon'] = '4 - 4';
-
 window.onload = () => {
-    const fixtures = document.querySelector('#fixtures');
-    const standings = document.querySelector('#standings');
+    const fixturesTable = document.querySelector('#fixtures');
+    const standingsTable = document.querySelector('#standings');
+
+    // populate fixtures table
     let gameNo = 0;
-    teams.map(home => {
-        const standingsTr = document.createElement('tr');
-        standingsTr.appendChild(createTdFromData(home));
-        let won = 0;
-        let drawn = 0;
-        let lost = 0;
-        let gf = 0;
-        let ga = 0;
-        let gd = 0;
-        for (key in results) {
-            const teams = key.split(' vs ');
-            const goals = results[key].split(' - ').map(goal => Number(goal));
-            const homeIndex = teams.indexOf(home);
-            if (homeIndex !== -1) {
-                const otherIndex = (homeIndex + 1) % 2;
-                const homeGoals = goals[homeIndex];
-                const otherGoals = goals[otherIndex];
-                if (homeGoals > otherGoals) won++;
-                else if (homeGoals === otherGoals) drawn++;
-                else lost++;
-                gf += homeGoals;
-                ga += otherGoals;
-                gd = gf - ga;    
-            }
-        }
-        standingsTr.appendChild(createTdFromData(won));
-        standingsTr.appendChild(createTdFromData(drawn));
-        standingsTr.appendChild(createTdFromData(lost));
-        standingsTr.appendChild(createTdFromData((won * 3) + drawn));
-        standingsTr.appendChild(createTdFromData(gf));
-        standingsTr.appendChild(createTdFromData(ga));
-        standingsTr.appendChild(createTdFromData(gd));
-        standings.appendChild(standingsTr);
+    teams.map(home => {        
         teams.map(away => {
             if (home !== away) {
                 const fixturesTr = document.createElement('tr');
@@ -54,8 +68,18 @@ window.onload = () => {
                 fixturesTr.appendChild(createTdFromData(home));
                 fixturesTr.appendChild(createTdFromData(away));
                 fixturesTr.appendChild(createTdFromData(results[`${home} vs ${away}`]));
-                fixtures.appendChild(fixturesTr);
+                fixturesTable.appendChild(fixturesTr);
             }
         });
-    });    
+    });
+    
+    // populate standings table
+    const standings = getStandingsFromResults(results);
+    standings.forEach(standingsRow => {
+        const standingsTr = document.createElement('tr');
+        for (key in standingsRow) {
+            standingsTr.appendChild(createTdFromData(standingsRow[key]));
+        }
+        standingsTable.appendChild(standingsTr);
+    });
 };

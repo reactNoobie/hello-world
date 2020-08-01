@@ -8,12 +8,13 @@ results['Soumik vs Leon'] = '1 - 4';
 results['Soumik vs Tahmid'] = '2 - 1';
 
 const getNewStandingsRow = name => ({
-    name, played: 0, won: 0, lost: 0, drawn: 0, points: 0, gf: 0, ga: 0, gd: 0
+    name, played: 0, won: 0, drawn: 0, lost: 0, points: 0, gf: 0, ga: 0, gd: 0
 });
 
 const getStandingsFromResults =  results => {
     const standings = [];
     for (fixture in results) {
+        console.log('Fixture: ', fixture);
         const teams = fixture.split(' vs ');
         const goals = results[fixture].split(' - ').map(goal => Number(goal));
         for (let i = 0; i < teams.length; i++) {
@@ -38,6 +39,7 @@ const getStandingsFromResults =  results => {
             } else {
                 entryForTeam.lost++;
             }
+            console.log(entryForTeam);
         }
     }
     return standings.sort((team1, team2) => {

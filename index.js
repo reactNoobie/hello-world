@@ -15,7 +15,10 @@ const getStandingsFromResults =  results => {
     const standings = [];
     for (fixture in results) {
         const teams = fixture.split(' vs ');
-        const goals = results[fixture].map(goal => Number(goal));
+        const goals = results[fixture].map(goal => goal === null ? null : Number(goal));
+        if (goals.some(goal => goal === null)) {
+            continue;
+        }
         for (let i = 0; i < teams.length; i++) {
             const team = teams[i];
             let entryForTeam = standings.find(entry => entry.name === team);
@@ -90,6 +93,11 @@ const populateStandingsTable = standingsTable => {
     });
 }
 
+const updateTables = (fixturesTable, standingsTable) => {
+    updatePlayedFixtures(fixturesTable);
+    populateStandingsTable(standingsTable);
+}
+
 const getResultTd = (home, away, fixturesTable, standingsTable) => {
     const fixtureKey = `${home} vs ${away}`;
     const resultTd = document.createElement('td');
@@ -97,15 +105,14 @@ const getResultTd = (home, away, fixturesTable, standingsTable) => {
         const goals = e.target.value;
         if (!results[fixtureKey]) results[fixtureKey] = [goals, null];
         else results[fixtureKey][0] = goals;
-        updatePlayedFixtures(fixturesTable);
-        populateStandingsTable(standingsTable);
+        updateTables(fixturesTable, standingsTable);
+        
     });
     const awayGoals = getGoalInput(away[0], e => {
         const goals = e.target.value;
         if (!results[fixtureKey]) results[fixtureKey] = [null, goals];
         else results[fixtureKey][1] = goals;
-        updatePlayedFixtures(fixturesTable);
-        populateStandingsTable(standingsTable);
+        updateTables(fixturesTable, standingsTable);
     });
     const separator = document.createTextNode(' - ');
     resultTd.appendChild(homeGoals);

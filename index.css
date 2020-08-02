@@ -6,17 +6,32 @@ table {
     width: 100%;
     border: 1px solid royalblue;
 }
-tr, th {
+tr {
     text-align: center;
     background-color: orange;
     color: black;
     font-weight: bold;
-    padding: 5px;
 }
-input {
+.goalInput {
     max-width: 40px;
     text-align: center;
 }
 .fixturePlayed {
     background-color: rgb(153, 224, 224);
+}
+.tableHeading {
+    background-color: lightcoral;
+    height: 40px;
+}
+#playerNameInput {
+    width: 50%;
+    border: 2px solid royalblue;
+    padding: 10px;
+}
+#addPlayerButton {
+    width: 25%;
+    background-color: lightseagreen;
+    border: 2px solid royalblue;
+    padding: 10px;
+    font-weight: bold;
 }

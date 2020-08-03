@@ -1,19 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <head></head>
+  <head>
+    <link rel="stylesheet" href="./index.css">
+    <script src="./index.js"></script>
+  </head>
   <body>
-    <h1 id="soumik">Soumik!</h1>
-    <h1 id="count"></h1>
-    <script>
-      let count = 0;
-      window.onload = () => {
-        const soumikElement = document.querySelector('#soumik');
-        const countElement = document.querySelector('#count');
-        setInterval(() => {
-          soumikElement.innerText = `${soumikElement.innerText}!`;
-          countElement.innerText = ++count;
-        }, 3000);
-      };
-    </script>
+    <h1>Teams</h1>
+    <table id="teams">
+      <tr class="tableHeading">
+        <th>Name</th>
+      </tr>
+    </table>
+    <h1>Add team</h1>
+    <input type="text" placeholder="Enter player name" id="playerNameInput">
+    <button id="addPlayerButton">Add</button>
+    <h1>Fixtures</h1>
+    <table id="fixtures">
+      <tr class="tableHeading">
+        <th>Game #</th>
+        <th>Home</th>
+        <th>Away</th>
+        <th>Result</th>
+      </th>
+    </table>
+    <h1>Standings</h1>
+    <table id="standings">
+      <tr class="tableHeading">
+        <th>Name</th>
+        <th>Played</th>
+        <th>Won</th>
+        <th>Drawn</th>
+        <th>Lost</th>
+        <th>Points</th>
+        <th>GF</th>
+        <th>GA</th>
+        <th>GD</th>
+      </tr>
+    </table>
   </body>
 </html>

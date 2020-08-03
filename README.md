@@ -15,3 +15,11 @@ Later it was turned into a round-robin 2-legged fixtures and standings generator
 * Standings table is sorted by points, then goal difference
 * Win gives 3 points, draw 1, loss 0
 * If new team is added, everything gets reset (results are lost, standings table becomes empty)
+## Screenshots
+### Initial screen
+![Initial screen](https://github.com/reactNoobie/hello-world/blob/master/screenshots/Initial.png)
+### Fixtures only
+![Fixtures only](https://github.com/reactNoobie/hello-world/blob/master/screenshots/Fixtures_Only.png)
+### With standings
+![With standings 1](https://github.com/reactNoobie/hello-world/blob/master/screenshots/With_Standings_1.png)
+![With standings 2](https://github.com/reactNoobie/hello-world/blob/master/screenshots/With_Standings_2.png)

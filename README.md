@@ -6,7 +6,10 @@ Later it was turned into a round-robin 2-legged fixtures and standings generator
 * Single page application built with raw HTML, CSS and JavaScript
 * Very basic layout and styling
 * Takes some user inputs and renders some tables
+## Installation
+* Clone this project and open index.html in your browser
 ## Usage
+* Visit [the site](https://reactnoobie.github.io/hello-world/)
 * **Don't reload the page!**
 * Input teams for your tournament
 * As teams are added, round-robin fixtures are automatically generated

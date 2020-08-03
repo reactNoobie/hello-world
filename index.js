@@ -73,7 +73,6 @@ const getFixturesFromTeams = teams => {
     return fixtures;
 };
 
-
 const getTdFromData = data => {
     const td = document.createElement('td');
     td.innerText = data;
@@ -89,6 +88,29 @@ const getGoalInput = (placeholder, value, onchange) => {
     goalInput.value = value;
     goalInput.onchange = e => onchange(e);
     return goalInput;
+}
+
+const isFixturePlayed = fixture => (fixture.homeGoals !== null && fixture.awayGoals !== null);
+
+const getResultTd = (fixture, fixturesTable, fixtures) => {
+    const resultTd = document.createElement('td');
+    const homeGoals = getGoalInput(fixture.home[0], fixture.homeGoals, e => {
+        fixture.homeGoals = Number(e.target.value);
+        fixture.fixturePlayed = isFixturePlayed(fixture);
+        populateFixturesTable(fixturesTable, fixtures);
+        populateStandingsTable(document.querySelector('#standings'), getStandingsFromFixtures(fixtures));
+    });
+    const awayGoals = getGoalInput(fixture.away[0], fixture.awayGoals, e => {
+        fixture.awayGoals = Number(e.target.value);
+        fixture.fixturePlayed = isFixturePlayed(fixture);
+        populateFixturesTable(fixturesTable, fixtures);
+        populateStandingsTable(document.querySelector('#standings'), getStandingsFromFixtures(fixtures));
+    });
+    const separator = document.createTextNode(' - ');
+    resultTd.appendChild(homeGoals);
+    resultTd.appendChild(separator)
+    resultTd.appendChild(awayGoals);
+    return resultTd;
 }
 
 const clearTableData = table => {
@@ -134,29 +156,6 @@ const populateStandingsTable = (standingsTable, standings) => {
         }
         standingsTable.appendChild(standingsTr);
     });
-}
-
-const isFixturePlayed = fixture => (fixture.homeGoals !== null && fixture.awayGoals !== null);
-
-const getResultTd = (fixture, fixturesTable, fixtures) => {
-    const resultTd = document.createElement('td');
-    const homeGoals = getGoalInput(fixture.home[0], fixture.homeGoals, e => {
-        fixture.homeGoals = Number(e.target.value);
-        fixture.fixturePlayed = isFixturePlayed(fixture);
-        populateFixturesTable(fixturesTable, fixtures);
-        populateStandingsTable(document.querySelector('#standings'), getStandingsFromFixtures(fixtures));
-    });
-    const awayGoals = getGoalInput(fixture.away[0], fixture.awayGoals, e => {
-        fixture.awayGoals = Number(e.target.value);
-        fixture.fixturePlayed = isFixturePlayed(fixture);
-        populateFixturesTable(fixturesTable, fixtures);
-        populateStandingsTable(document.querySelector('#standings'), getStandingsFromFixtures(fixtures));
-    });
-    const separator = document.createTextNode(' - ');
-    resultTd.appendChild(homeGoals);
-    resultTd.appendChild(separator)
-    resultTd.appendChild(awayGoals);
-    return resultTd;
 }
 
 window.onload = () => {

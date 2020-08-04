@@ -1,3 +1,7 @@
+const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+
+const load = key => JSON.parse(localStorage.getItem(key));
+
 const getNewStandingsRow = name => ({
     name, played: 0, won: 0, drawn: 0, lost: 0, points: 0, gf: 0, ga: 0, gd: 0
 });
@@ -105,7 +109,7 @@ const getResultTd = (fixture, fixtures) => {
         const updatedFixtures = fixtures.map(f => (
             f.gameNo === updatedFixture.gameNo ? updatedFixture : f
         ));
-        localStorage.setItem('fixtures', JSON.stringify(updatedFixtures));
+        save('fixtures', updatedFixtures);
         render();
     };
     const homeGoals = getGoalInput('home', fixture.home[0], fixture.homeGoals, onGoalChanged);
@@ -127,7 +131,7 @@ const clearTableData = table => {
 }
 
 const populateTeamsTable = teamsTable => {
-    const teams = JSON.parse(localStorage.getItem('teams')) || [];
+    const teams = load('teams') || [];
     clearTableData(teamsTable);
     teams.forEach(team => {
         const teamTr = document.createElement('tr');
@@ -137,7 +141,7 @@ const populateTeamsTable = teamsTable => {
 };
 
 const populateFixturesTable = fixturesTable => {
-    const fixtures = JSON.parse(localStorage.getItem('fixtures')) || [];
+    const fixtures = load('fixtures') || [];
     clearTableData(fixturesTable);
     fixtures.forEach(fixture => {
         const fixtureTr = document.createElement('tr');
@@ -154,7 +158,7 @@ const populateFixturesTable = fixturesTable => {
 };
 
 const populateStandingsTable = standingsTable => {
-    const fixtures = JSON.parse(localStorage.getItem('fixtures')) || [];
+    const fixtures = load('fixtures') || [];
     const standings = getStandingsFromFixtures(fixtures);
     clearTableData(standingsTable);
     standings.forEach(standingsRow => {
@@ -186,15 +190,15 @@ window.onload = () => {
         addPlayerButton.disabled = !e.target.value.trim();
     }
     addPlayerButton.onclick = () => {
-        const teams = JSON.parse(localStorage.getItem('teams')) || [];
+        const teams = load('teams') || [];
         const processedValue = playerNameInput.value.trim();
         if (!teams.includes(processedValue)) {
             playerNameInput.value = '';
             const newTeams = [...teams, processedValue];
             const newFixtures = getFixturesFromTeams(newTeams);
             localStorage.clear();
-            localStorage.setItem('teams', JSON.stringify(newTeams));
-            localStorage.setItem('fixtures', JSON.stringify(newFixtures));
+            save('teams', newTeams);
+            save('fixtures', newFixtures);
             render();
         } else {
             alert(`${processedValue} is already in!`);

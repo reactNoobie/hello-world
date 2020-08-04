@@ -1,3 +1,7 @@
+const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+
+const load = key => JSON.parse(localStorage.getItem(key));
+
 const getNewStandingsRow = name => ({
     name, played: 0, won: 0, drawn: 0, lost: 0, points: 0, gf: 0, ga: 0, gd: 0
 });
@@ -79,9 +83,10 @@ const getTdFromData = data => {
     return td;
 }
 
-const getGoalInput = (placeholder, value, onchange) => {
+const getGoalInput = (goalFor, placeholder, value, onchange) => {
     const goalInput = document.createElement('input');
     goalInput.classList.add('goalInput');
+    goalInput.setAttribute('data-goal-for', goalFor);
     goalInput.type = 'number';
     goalInput.min = 0;
     goalInput.placeholder = placeholder;
@@ -92,20 +97,23 @@ const getGoalInput = (placeholder, value, onchange) => {
 
 const isFixturePlayed = fixture => (fixture.homeGoals !== null && fixture.awayGoals !== null);
 
-const getResultTd = (fixture, fixturesTable, fixtures) => {
+const getResultTd = (fixture, fixtures) => {
     const resultTd = document.createElement('td');
-    const homeGoals = getGoalInput(fixture.home[0], fixture.homeGoals, e => {
-        fixture.homeGoals = Number(e.target.value);
-        fixture.fixturePlayed = isFixturePlayed(fixture);
-        populateFixturesTable(fixturesTable, fixtures);
-        populateStandingsTable(document.querySelector('#standings'), getStandingsFromFixtures(fixtures));
-    });
-    const awayGoals = getGoalInput(fixture.away[0], fixture.awayGoals, e => {
-        fixture.awayGoals = Number(e.target.value);
-        fixture.fixturePlayed = isFixturePlayed(fixture);
-        populateFixturesTable(fixturesTable, fixtures);
-        populateStandingsTable(document.querySelector('#standings'), getStandingsFromFixtures(fixtures));
-    });
+    const onGoalChanged = e => {
+        const goalInput = e.target;
+        const keyToUpdate = goalInput.getAttribute('data-goal-for') === 'home' ?
+            'homeGoals' : 'awayGoals';
+        const updatedFixture = Object.assign({}, fixture);
+        updatedFixture[keyToUpdate] = Number(goalInput.value);
+        updatedFixture.fixturePlayed = isFixturePlayed(updatedFixture)
+        const updatedFixtures = fixtures.map(f => (
+            f.gameNo === updatedFixture.gameNo ? updatedFixture : f
+        ));
+        save('fixtures', updatedFixtures);
+        render();
+    };
+    const homeGoals = getGoalInput('home', fixture.home[0], fixture.homeGoals, onGoalChanged);
+    const awayGoals = getGoalInput('away', fixture.away[0], fixture.awayGoals, onGoalChanged);
     const separator = document.createTextNode(' - ');
     resultTd.appendChild(homeGoals);
     resultTd.appendChild(separator)
@@ -122,7 +130,8 @@ const clearTableData = table => {
     });
 }
 
-const populateTeamsTable = (teamsTable, teams) => {
+const populateTeamsTable = teamsTable => {
+    const teams = load('teams') || [];
     clearTableData(teamsTable);
     teams.forEach(team => {
         const teamTr = document.createElement('tr');
@@ -131,7 +140,8 @@ const populateTeamsTable = (teamsTable, teams) => {
     });
 };
 
-const populateFixturesTable = (fixturesTable, fixtures) => {
+const populateFixturesTable = fixturesTable => {
+    const fixtures = load('fixtures') || [];
     clearTableData(fixturesTable);
     fixtures.forEach(fixture => {
         const fixtureTr = document.createElement('tr');
@@ -141,13 +151,15 @@ const populateFixturesTable = (fixturesTable, fixtures) => {
         fixtureTr.appendChild(getTdFromData(fixture.gameNo));
         fixtureTr.appendChild(getTdFromData(fixture.home));
         fixtureTr.appendChild(getTdFromData(fixture.away));
-        const resultTd = getResultTd(fixture, fixturesTable, fixtures);
+        const resultTd = getResultTd(fixture, fixtures);
         fixtureTr.appendChild(resultTd);
         fixturesTable.appendChild(fixtureTr);
     });
 };
 
-const populateStandingsTable = (standingsTable, standings) => {
+const populateStandingsTable = standingsTable => {
+    const fixtures = load('fixtures') || [];
+    const standings = getStandingsFromFixtures(fixtures);
     clearTableData(standingsTable);
     standings.forEach(standingsRow => {
         const standingsTr = document.createElement('tr');
@@ -158,12 +170,19 @@ const populateStandingsTable = (standingsTable, standings) => {
     });
 }
 
-window.onload = () => {
-    const teams = [];
-    const teamsTable = document.querySelector('#teams');
-    const fixturesTable = document.querySelector('#fixtures');
-    const standingsTable = document.querySelector('#standings');
+const render = () => {
+    populateTeamsTable(document.querySelector('#teams'));
+    populateFixturesTable(document.querySelector('#fixtures'));
+    populateStandingsTable(document.querySelector('#standings'));
+}
 
+window.onload = () => {
+    render();
+    const resetButton = document.querySelector('#resetButton');
+    resetButton.onclick = () => {
+        localStorage.clear();
+        render();
+    }
     const playerNameInput = document.querySelector('#playerNameInput');
     const addPlayerButton = document.querySelector('#addPlayerButton');
     addPlayerButton.disabled = true;
@@ -171,15 +190,16 @@ window.onload = () => {
         addPlayerButton.disabled = !e.target.value.trim();
     }
     addPlayerButton.onclick = () => {
+        const teams = load('teams') || [];
         const processedValue = playerNameInput.value.trim();
         if (!teams.includes(processedValue)) {
             playerNameInput.value = '';
-            teams.push(processedValue);
-            populateTeamsTable(teamsTable, teams);
-            const fixtures = getFixturesFromTeams(teams);
-            const standings = getStandingsFromFixtures(fixtures);
-            populateFixturesTable(fixturesTable, fixtures);
-            populateStandingsTable(standingsTable, standings);
+            const newTeams = [...teams, processedValue];
+            const newFixtures = getFixturesFromTeams(newTeams);
+            localStorage.clear();
+            save('teams', newTeams);
+            save('fixtures', newFixtures);
+            render();
         } else {
             alert(`${processedValue} is already in!`);
         }

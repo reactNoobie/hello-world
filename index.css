@@ -1,43 +1,97 @@
 body {
     background-color: darkslateblue;
+    margin: 0 0;
+    border: 5px solid steelblue;
     color: floralwhite;
 }
+
+header {
+    background-color: black;
+    padding: 1px;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+}
+
+nav {
+    display: flex;
+}
+
+footer {
+    background-color: black;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+nav ul {
+    display: flex;
+    flex: 1;
+    padding: 0 0;
+    list-style-type: none;
+}
+
+nav li {
+    display: flex;
+    flex: 1;
+    background-color: teal;
+    border: 2px double turquoise;
+}
+
+nav a {
+    flex: 1;
+    padding: 10px;
+}
+
+a {
+    color: inherit;
+}
+
 table {
     width: 100%;
     border: 1px solid royalblue;
 }
+
 tr {
     text-align: center;
     background-color: orange;
     color: black;
     font-weight: bold;
 }
+
 .goalInput {
     max-width: 40px;
     text-align: center;
 }
+
 .fixturePlayed {
     background-color: rgb(153, 224, 224);
 }
+
 .tableHeading {
     background-color: lightcoral;
     height: 40px;
 }
+
 #playerNameInput {
     width: 50%;
     border: 2px solid royalblue;
     padding: 10px;
 }
+
 button {
     border: 2px solid royalblue;
     padding: 10px;
     font-weight: bold;
 }
+
 #resetButton {
     width: 100%;
     background-color: crimson;
     color: whitesmoke;
 }
+
 #addPlayerButton {
     width: 25%;
     background-color: lightseagreen;

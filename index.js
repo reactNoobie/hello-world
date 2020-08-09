@@ -171,9 +171,9 @@ const populateStandingsTable = standingsTable => {
 }
 
 const render = () => {
-    populateTeamsTable(document.querySelector('#teams'));
-    populateFixturesTable(document.querySelector('#fixtures'));
-    populateStandingsTable(document.querySelector('#standings'));
+    populateTeamsTable(document.querySelector('#teams-table'));
+    populateFixturesTable(document.querySelector('#fixtures-table'));
+    populateStandingsTable(document.querySelector('#standings-table'));
 }
 
 window.onload = () => {
@@ -192,7 +192,10 @@ window.onload = () => {
     addPlayerButton.onclick = () => {
         const teams = load('teams') || [];
         const processedValue = playerNameInput.value.trim();
-        if (!teams.includes(processedValue)) {
+        if (!processedValue) {
+            alert('Please input a valid name')
+        }
+        else if (!teams.includes(processedValue)) {
             playerNameInput.value = '';
             const newTeams = [...teams, processedValue];
             const newFixtures = getFixturesFromTeams(newTeams);

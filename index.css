@@ -1,3 +1,5 @@
+/* #8F2E44 */
+
 body {
     background-color: darkslateblue;
     margin: 0 0;
@@ -6,7 +8,7 @@ body {
 }
 
 header {
-    background-color: black;
+    background-color: #25A883;
     padding: 1px;
     text-align: center;
 }
@@ -20,7 +22,7 @@ nav {
 }
 
 footer {
-    background-color: black;
+    background-color: #25A883;
     margin-top: 20px;
     padding: 10px;
 }
@@ -35,8 +37,8 @@ nav ul {
 nav li {
     display: flex;
     flex: 1;
-    background-color: teal;
-    border: 2px double turquoise;
+    background-color: #54756C;
+    border: 2px double #25A883;
 }
 
 nav a {
@@ -46,6 +48,33 @@ nav a {
 
 a {
     color: inherit;
+}
+
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.2s ease-in;
+    pointer-events: none;
+}
+
+.modalShown {
+    opacity: 1.0;
+    transition: opacity 0.5s ease-out;
+    pointer-events: auto;
+}
+
+.modal button {
+    margin: 1rem;
+    width: 5rem;
 }
 
 table {
@@ -75,7 +104,8 @@ tr {
 }
 
 #playerNameInput {
-    width: 50%;
+    box-sizing: border-box;
+    width: 100%;
     border: 2px solid royalblue;
     padding: 10px;
 }
@@ -88,11 +118,13 @@ button {
 
 #resetButton {
     width: 100%;
-    background-color: crimson;
+    background-color: tomato;
     color: whitesmoke;
 }
 
 #addPlayerButton {
-    width: 25%;
+    display: block;
+    width: 100%;
     background-color: lightseagreen;
+    color: whitesmoke;
 }

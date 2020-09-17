@@ -23,8 +23,14 @@
     </nav>
   </header>
   <main>
+    <div class="modal">
+      <div>
+        Are you sure?<br>
+        <button id="confirmResetBtn">Yes</button>
+        <button id="cancelResetBtn">No</button>
+      </div>
+    </div>
     <section>
-      <button id="resetButton">Reset</button>
       <h2 id="add-team">Add team</h2>
       <input type="text" placeholder="Enter player name" id="playerNameInput">
       <button id="addPlayerButton">Add</button>
@@ -57,6 +63,8 @@
           <th>GD</th>
         </tr>
       </table>
+      <br>
+      <button id="resetButton">Reset</button>
     </section>
   </main>
   <footer>

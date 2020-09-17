@@ -2,6 +2,13 @@ const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
 const load = key => JSON.parse(localStorage.getItem(key));
 
+const remove = key => localStorage.removeItem(key);
+
+const clearStorage = () => {
+    remove('teams');
+    remove('fixtures');
+};
+
 const getNewStandingsRow = name => ({
     name, played: 0, won: 0, drawn: 0, lost: 0, points: 0, gf: 0, ga: 0, gd: 0
 });
@@ -81,7 +88,7 @@ const getTdFromData = data => {
     const td = document.createElement('td');
     td.innerText = data;
     return td;
-}
+};
 
 const getGoalInput = (goalFor, placeholder, value, onchange) => {
     const goalInput = document.createElement('input');
@@ -93,7 +100,7 @@ const getGoalInput = (goalFor, placeholder, value, onchange) => {
     goalInput.value = value;
     goalInput.onchange = e => onchange(e);
     return goalInput;
-}
+};
 
 const isFixturePlayed = fixture => (fixture.homeGoals !== null && fixture.awayGoals !== null);
 
@@ -119,7 +126,7 @@ const getResultTd = (fixture, fixtures) => {
     resultTd.appendChild(separator)
     resultTd.appendChild(awayGoals);
     return resultTd;
-}
+};
 
 const clearTableData = table => {
     const trs = table.querySelectorAll('tr');
@@ -128,7 +135,7 @@ const clearTableData = table => {
             tr.remove();
         }
     });
-}
+};
 
 const populateTeamsTable = teamsTable => {
     const teams = load('teams') || [];
@@ -168,7 +175,11 @@ const populateStandingsTable = standingsTable => {
         }
         standingsTable.appendChild(standingsTr);
     });
-}
+};
+
+const toggleModal = () => {
+    document.querySelector('.modal').classList.toggle('modalShown');
+};
 
 const render = () => {
     populateTeamsTable(document.querySelector('#teams-table'));
@@ -180,8 +191,17 @@ window.onload = () => {
     render();
     const resetButton = document.querySelector('#resetButton');
     resetButton.onclick = () => {
-        localStorage.clear();
+        toggleModal();
+    }
+    const confirmResetButton = document.querySelector('#confirmResetBtn');
+    confirmResetButton.onclick = () => {
+        toggleModal();
+        clearStorage();
         render();
+    }
+    const cancelResetButton = document.querySelector('#cancelResetBtn');
+    cancelResetButton.onclick = () => {
+        toggleModal();
     }
     const playerNameInput = document.querySelector('#playerNameInput');
     const addPlayerButton = document.querySelector('#addPlayerButton');
@@ -199,7 +219,7 @@ window.onload = () => {
             playerNameInput.value = '';
             const newTeams = [...teams, processedValue];
             const newFixtures = getFixturesFromTeams(newTeams);
-            localStorage.clear();
+            clearStorage();
             save('teams', newTeams);
             save('fixtures', newFixtures);
             render();
